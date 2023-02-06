@@ -12,7 +12,7 @@ $cookie_domain= $_SERVER['HTTP_HOST'];
 if (PHP_VERSION_ID >= 70300) {
 session_set_cookie_params([
     'lifetime' =>  $currentCookieParams["lifetime"],
-    'path' => '/BLE/CreateSite/',
+    'path' => '/BLE/CreateCourseBS/',
     'domain' => $cookie_domain,
     'secure' => "1",
     'httponly' => "1",
@@ -21,7 +21,7 @@ session_set_cookie_params([
 } else {
 session_set_cookie_params(
     $currentCookieParams["lifetime"],
-    '/BLE/CreateSite/; samesite=None',
+    '/BLE/CreateCourseBS/; samesite=None',
     $cookie_domain,
     "1",
     "1"
