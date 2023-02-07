@@ -7,12 +7,12 @@ require_once 'doValenceRequest.php';
 
 session_start();
 $toolKey = $_SESSION['toolKey'];
-$roleId = end(explode(",", $_SESSION['RoleId']));
+$roleId = $_SESSION['RoleId'];
 $userName = $_SESSION['UserName'];
 session_write_close();
 
 //Check the key is correct / wrap everything with LTI credentials
-if(($lti_auth['key'] == $toolKey) && ($roleId == "Instructor" || $roleId == "Administrator")){
+if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "Super Administrator")){
     $siteName = htmlspecialchars($_POST['siteName']);
     $explorerSite = htmlspecialchars($_POST['explorerSite']);
     $siteTerm = htmlspecialchars($_POST['siteTerm']);
