@@ -7,7 +7,6 @@ require_once 'doValenceRequest.php';
 
 session_start();
 $toolKey = $_SESSION['toolKey'];
-$orgUnitId =$_SESSION['OrgUnitId'];
 $roleId = end(explode(",", $_SESSION['RoleId']));
 $userName = $_SESSION['UserName'];
 session_write_close();

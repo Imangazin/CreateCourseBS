@@ -30,7 +30,6 @@ session_set_cookie_params(
 
 session_start();
 $_SESSION['toolKey'] = $context->info['oauth_consumer_key'];
-$_SESSION['OrgUnitId'] = $context->info['context_id'];
 $_SESSION['RoleId'] = $context->info['roles'];
 $_SESSION['UserName'] = $context->info['ext_d2l_username'];
 session_write_close();
