@@ -61,15 +61,14 @@
             <button type="submit" class="btn btn-primary">Request</button>
           </div>
           <div class="col">
-            <div id="quickAddSpinner"></div>
           </div>
         </div>
     </div>
   </form>
-  <div id="quickAddResponse" tabindex="-1"></div>
+  <div id="createSiteResponse" tabindex="-1"></div>
 </div>
 <script type="text/javascript">
-  let feedbackdiv = document.getElementById("quickAddResponse");
+  let createFeedback = document.getElementById("createSiteResponse");
   $(document).ready(function() {
     $('#createSiteForm').submit(function(e) {
         e.preventDefault();
@@ -81,6 +80,17 @@
             success: function(response)
             {
                console.log(response);
+               if (response.Code == 200){
+                  createFeedback.className = 'alert alert-success';
+                  createFeedback.innerHTML = "The <a href='/d2l/home/"+response.OrgUnitId+"'>site</a> successfully created";
+                  createFeedback.focus();
+                  document.getElementById("createSiteForm").reset();
+               }
+               else {
+                  createFeedback.className = 'alert alert-danger';
+                  createFeedback.innerHTML = response;
+                  createFeedback.focus();
+               }
             }
         });
       });
