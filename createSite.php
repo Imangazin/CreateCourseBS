@@ -62,12 +62,15 @@ if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "
         return;
     }
     
-    //get OrgUnitId of the selected term
-    $termProp = doValenceRequest('GET', '/d2l/api/lp/' . $config['LP_Version'] . '/orgstructure/?exactOrgUnitCode=' . $siteTerm);
-    //add selected term (semester) as a parent to the new offering
-    if($termProp['Code']==200){
-        $postParent = json_encode($termProp['response']->Identifier);
-        $addTerm = doValenceRequest('POST', '/d2l/api/lp/'. $config['LP_Version'] .'/orgstructure/'.$orgUnitId.'/parents/', $postParent);
+    //if user selects a term
+    if($siteTerm != "noterm"){
+        //get OrgUnitId of the selected term
+        $termProp = doValenceRequest('GET', '/d2l/api/lp/' . $config['LP_Version'] . '/orgstructure/?exactOrgUnitCode=' . $siteTerm);
+        //add selected term (semester) as a parent to the new offering
+        if($termProp['Code']==200){
+            $postParent = $termProp['response']->Identifier;
+            $addTerm = doValenceRequest('POST', '/d2l/api/lp/'. $config['LP_Version'] .'/orgstructure/'.$orgUnitId.'/parents/', $postParent);
+        }
     }
         
     //Send back to js success code and new OrgUnitId    

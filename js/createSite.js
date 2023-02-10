@@ -35,17 +35,17 @@ function populateTerm(){
 	var cMonth = new Date().getMonth();
 	
 	if (cMonth<4){
-		termSelect[termSelect.length] = new Option(cYear-1+termName[0]);
+		termSelect[termSelect.length] = new Option(cYear-1+termName[0], cYear-1+termCode[0]);
 		for(var i=1; i<termCode.length-1; i++){
 			termSelect[termSelect.length] = new Option(cYear+termName[i], cYear+termCode[i]);	
 		}
 	}else if (cMonth>3 && cMonth<8){
-		termSelect[termSelect.length] = new Option(cYear+termName[1]);
+		termSelect[termSelect.length] = new Option(cYear+termName[1], cYear+termCode[1]);
 		for(var i=2; i<termCode.length; i++){
 			termSelect[termSelect.length] = new Option(cYear+termName[i], cYear+termCode[i]);	
 		}
 	}else{
-		termSelect[termSelect.length] = new Option(cYear+termName[0]);
+		termSelect[termSelect.length] = new Option(cYear+termName[0], cYear+termCode[0]);
 		//for(var i=1; i<termCode.length-1; i++){
 		//	termSelect[termSelect.length] = new Option(cYear+1+termName[i], cYear+1+termCode[i]);	
 		//}
