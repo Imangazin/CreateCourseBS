@@ -2,7 +2,7 @@
 require_once("info.php");
 require_once 'lib/D2LAppContextFactory.php';
 require_once 'doValenceRequest.php';
-
+ 
 //read LTI tool Key, Role and Username passed by session from main page index.php
 
 session_start();
@@ -11,19 +11,26 @@ $roleId = $_SESSION['RoleId'];
 $userName = $_SESSION['UserName'];
 session_write_close();
 
+/**
+ * Convert all applicable characters to HTML entities.
+ * @param string $text The string being converted.
+ * @return string The converted string.
+ */
+function html($text)
+{
+    return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
 //Check the LTI key is correct and role of the user in organization
 if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "Super Administrator")){
     //recieve the site title from the user
-    $siteName = htmlspecialchars($_POST['siteName']);
-    //remove special chars from the offering code
-    $siteCode = str_replace(array('\\',':','*','?','"','<','>','|','\'','#',',','%','&'),'',$siteName);
+    $siteName = trim($_POST['siteName']);
+    //remove special chars from the offering code and restrict it to 50 chars
+    $siteCode = str_replace(array('\\',':','*','?','"','<','>','|','\'','#',',','%','&'),'',substr($siteName, 0, 50));
     //default the course template to specific template 
-    $siteTemplate = config['project_site_id'];
-    //change template
-    if($_POST['explorerSite'] == 'yes') 
-        $siteTemplate = config['explorer_site_id'];
+    $siteTemplate = $config['project_site_id'];
     //recive a term
-    $siteTerm = htmlspecialchars($_POST['siteTerm']);
+    $siteTerm = $_POST['siteTerm'];
     
     //course offering properties, see https://docs.valence.desire2learn.com/res/course.html#Course.CreateCourseOffering for more deatils
     $courseParameters = array("Name"             => $siteName,
@@ -46,7 +53,8 @@ if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "
     if ($createOffering['Code']==200){
         $userData = doValenceRequest('GET', '/d2l/api/lp/' . $config['LP_Version'] . '/users/?userName=' . $userName);
         $userId = $userData['response']->UserId;
-        $postOfferingData = array("OrgUnitId"=>$createOffering['response']->Identifier,"UserId"=>$userId,"RoleId"=>109);
+        $orgUnitId = $createOffering['response']->Identifier;
+        $postOfferingData = array("OrgUnitId"=>$orgUnitId,"UserId"=>$userId,"RoleId"=>109);
         $offerringEnroll = doValenceRequest('POST', '/d2l/api/lp/'. $config['LP_Version'] .'/enrollments/', $postOfferingData);
     }
     else {
@@ -54,17 +62,27 @@ if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "
         return;
     }
     
+    //get OrgUnitId of the selected term
+    $termProp = doValenceRequest('GET', '/d2l/api/lp/' . $config['LP_Version'] . '/orgstructure/?exactOrgUnitCode=' . $siteTerm);
+    //add selected term (semester) as a parent to the new offering
+    if($termProp['Code']==200){
+        $postParent = json_encode($termProp['response']->Identifier);
+        $addTerm = doValenceRequest('POST', '/d2l/api/lp/'. $config['LP_Version'] .'/orgstructure/'.$orgUnitId.'/parents/', $postParent);
+    }
+        
     //Send back to js success code and new OrgUnitId    
     if ($offerringEnroll['Code']==200){
+        $offeringName = html($siteName);
         $results = array("Code" => $offerringEnroll['Code'],
-                         "OrgUnitId" => $offerringEnroll['response']->Identifier);
+                         "OrgUnitId" => $orgUnitId,
+                         "Name" => $offeringName);
         echo json_encode($results);
     }
     else{
-        echo "Something went wrong while creating a course offering"
+        echo "Something went wrong while creating a course offering";
     }
 }
 else {
         echo "User has no permission to create a site";
-}
+} 
 ?>

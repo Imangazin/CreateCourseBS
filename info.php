@@ -1,13 +1,15 @@
 <?php
 //Quick Add LTI info.php
 
+//require_once 'ims-blti/blti.php';
+
 //The LTI Credentials for index.php
 
 //You need to set the LTI Key and LTI Secret
 $lti_auth = array('key' => '', 'secret' => '');
 
 //Support Email shown to users in the tool
-$supportEmail = "";
+$supportEmail = "edtech@brocku.ca";
 
 $config = array(
     'libpath'    => 'lib',
@@ -21,5 +23,6 @@ $config = array(
     'userId'     => '',
     'userKey'    => '',
 
-    'LP_Version' => '1.42');
+    'LP_Version' => '1.42',
+    'project_site_id'  => );
 ?>

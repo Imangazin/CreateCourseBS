@@ -15,7 +15,7 @@
  * the License.
  */
 
-require_once('config.php');
+require_once('info.php');
 
 /*
     This file performs the actual API call. In your application you may wish to rewrite this.
