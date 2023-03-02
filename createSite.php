@@ -34,7 +34,9 @@ if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "
     if($siteTerm != "noterm"){
         //get OrgUnitId of the selected term
         $termProp = doValenceRequest('GET', '/d2l/api/lp/' . $config['LP_Version'] . '/orgstructure/?exactOrgUnitCode=' . $_POST['siteTerm']);
-        $semesterId = $termProp['response']->Items[0]->Identifier;
+        if ($termProp['Code']==200){
+            $semesterId = $termProp['response']->Items[0]->Identifier;
+        }
     }
     
     //course offering properties, see https://docs.valence.desire2learn.com/res/course.html#Course.CreateCourseOffering for more deatils
