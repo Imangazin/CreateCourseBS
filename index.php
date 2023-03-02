@@ -9,7 +9,8 @@ $context = new BLTI($lti_auth['secret'], false, false);
 
 $currentCookieParams = session_get_cookie_params();
 $cookie_domain= $_SERVER['HTTP_HOST'];
-if (PHP_VERSION_ID >= 70300) {
+//uncomment this if using newer version of php
+/*if (PHP_VERSION_ID >= 70300) {
 session_set_cookie_params([
     'lifetime' =>  $currentCookieParams["lifetime"],
     'path' => '/BLE/CreateCourseBS/',
@@ -18,7 +19,7 @@ session_set_cookie_params([
     'httponly' => "1",
     'samesite' => 'None',
 ]);
-} else {
+} else {*/
 session_set_cookie_params(
     $currentCookieParams["lifetime"],
     '/BLE/CreateCourseBS/; samesite=None',
@@ -26,7 +27,7 @@ session_set_cookie_params(
     "1",
     "1"
 );
-}
+//}
 
 session_start();
 $_SESSION['toolKey'] = $context->info['oauth_consumer_key'];
