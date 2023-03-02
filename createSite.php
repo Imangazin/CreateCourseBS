@@ -26,18 +26,23 @@ if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "
     //recieve the site title from the user
     $siteName = trim($_POST['siteName']);
     //remove special chars from the offering code and restrict it to 50 chars
-    $siteCode = str_replace(array('\\',':','*','?','"','<','>','|','\'','#',',','%','&'),'',substr($siteName, 0, 50));
+    $siteCode = str_replace(array('\\',':','*','?','"','<','>','|','\'','#',',','%','&','.'),'',substr($siteName, 0, 47)).'_PS';
     //default the course template to specific template 
     $siteTemplate = $config['project_site_id'];
-    //recive a term
-    $siteTerm = $_POST['siteTerm'];
+
+    $semesterId=null;
+    if($siteTerm != "noterm"){
+        //get OrgUnitId of the selected term
+        $termProp = doValenceRequest('GET', '/d2l/api/lp/' . $config['LP_Version'] . '/orgstructure/?exactOrgUnitCode=' . $_POST['siteTerm']);
+        $semesterId = $termProp['response']->Items[0]->Identifier;
+    }
     
     //course offering properties, see https://docs.valence.desire2learn.com/res/course.html#Course.CreateCourseOffering for more deatils
     $courseParameters = array("Name"             => $siteName,
                               "Code"             => $siteCode,
                               "Path"             => '',
                               "CourseTemplateId" => $siteTemplate,
-                              "SemesterId"       => null,
+                              "SemesterId"       => $semesterId,
                               "StartDate"        => null,
                               "EndDate"          => null,
                               "LocaleId"         => null,
@@ -61,18 +66,7 @@ if(($lti_auth['key'] == $toolKey) && ($roleId == "faculty-staff" || $roleId == "
         echo "Something went wrong while creating a course offering";
         return;
     }
-    
-    //if user selects a term
-    if($siteTerm != "noterm"){
-        //get OrgUnitId of the selected term
-        $termProp = doValenceRequest('GET', '/d2l/api/lp/' . $config['LP_Version'] . '/orgstructure/?exactOrgUnitCode=' . $siteTerm);
-        //add selected term (semester) as a parent to the new offering
-        if($termProp['Code']==200){
-            $postParent = $termProp['response']->Identifier;
-            $addTerm = doValenceRequest('POST', '/d2l/api/lp/'. $config['LP_Version'] .'/orgstructure/'.$orgUnitId.'/parents/', $postParent);
-        }
-    }
-        
+      
     //Send back to js success code and new OrgUnitId    
     if ($offerringEnroll['Code']==200){
         $offeringName = html($siteName);
