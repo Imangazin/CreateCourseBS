@@ -1,10 +1,4 @@
 <?php
-//Quick Add LTI info.php
-
-//require_once 'ims-blti/blti.php';
-
-//The LTI Credentials for index.php
-
 //You need to set the LTI Key and LTI Secret
 $lti_auth = array('key' => '', 'secret' => '');
 
