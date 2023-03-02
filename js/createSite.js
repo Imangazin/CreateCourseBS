@@ -13,7 +13,8 @@ var createFeedback = document.getElementById("createSiteResponse");
                console.log(response);
                if (response.Code == 200){
                   createFeedback.className = 'alert alert-success';
-                  createFeedback.innerHTML = "The <a href='https://brocktest.brightspace.com/d2l/home/"+response.OrgUnitId+"' target='_blank'>"+response.Name+"</a> successfully created";
+		  siteName = response.Name;
+                  createFeedback.innerHTML = "<a href='https://brocktest.brightspace.com/d2l/home/"+response.OrgUnitId+"' target='_blank'>"+siteName.substring(0,20)+"</a> successfully created";
                   createFeedback.focus();
                   document.getElementById("createSiteForm").reset();
                }
