@@ -14,7 +14,10 @@ var createFeedback = document.getElementById("createSiteResponse");
                if (response.Code == 200){
                   createFeedback.className = 'alert alert-success';
 		  siteName = response.Name;
-                  createFeedback.innerHTML = "<a href='https://brocktest.brightspace.com/d2l/home/"+response.OrgUnitId+"' target='_blank'>"+siteName.substring(0,20)+"</a> successfully created";
+		  if (siteName.length > 25){
+			siteName = siteName.substring(0,25)+'...';
+		  } 
+                  createFeedback.innerHTML = "<a href='https://brocktest.brightspace.com/d2l/home/"+response.OrgUnitId+"' target='_blank'>"+siteName+"</a> successfully created";
                   createFeedback.focus();
                   document.getElementById("createSiteForm").reset();
                }
